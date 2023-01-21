@@ -13,11 +13,30 @@ app.get('/', (req, res) => {
 
 app.post('/weather', async function (req, res) {
   try {
-    const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?APPID=${key.API_KEY}`,
+    const coordinatesResponse = await fetch(
+      `http://api.openweathermap.org/geo/1.0/direct?q=${req.body.cityName}&limit=1&appid=${key.API_KEY}`,
     );
-    const data = await response.json();
-    res.json(data);
+    const geo = await coordinatesResponse.json();
+    if (geo[0]) {
+      const { lat, lon } = geo[0];
+      console.log(lat, lon);
+
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${lon}&appid=${key.API_KEY}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(req.body),
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+      const data = await response.json();
+      res.json({
+        cityName: data.name,
+        weather: data.main.temp,
+      });
+    } else {
+      res.json({ weatherText: 'City is not found!' });
+    }
   } catch (error) {
     console.log(error);
   }
