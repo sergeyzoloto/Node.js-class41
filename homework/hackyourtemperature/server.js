@@ -19,7 +19,6 @@ app.post('/weather', async function (req, res) {
     const geo = await coordinatesResponse.json();
     if (geo[0]) {
       const { lat, lon } = geo[0];
-      console.log(lat, lon);
 
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${lat}&lon=${lon}&appid=${key.API_KEY}`,
