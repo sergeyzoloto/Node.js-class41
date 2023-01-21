@@ -2,7 +2,7 @@ import express from 'express';
 import { key } from './sources/keys.js';
 import fetch from 'node-fetch';
 
-export const app = express();
+const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -38,3 +38,5 @@ app.post('/weather', async function (req, res) {
     console.log(error);
   }
 });
+
+export default app;
