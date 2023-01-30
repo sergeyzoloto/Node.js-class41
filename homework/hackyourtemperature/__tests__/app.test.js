@@ -2,7 +2,7 @@ import app from '../app.js';
 import request from 'supertest';
 
 describe('POST /weather', () => {
-  it('when passed a correct request, a response contains required body in JSON and correct status code', async () => {
+  it('when passed a correct request, a response contains required body in JSON and status code 200', async () => {
     const city = 'London';
     const response = await request(app).post('/weather').send({
       cityName: city,
@@ -12,14 +12,13 @@ describe('POST /weather', () => {
       expect.stringContaining('json'),
     );
     expect(response.body.cityName).toEqual(city);
-    expect(response.body.weatherText).toBeDefined();
     expect(response.body.weatherText).toContain(city);
   });
   it('when passed a request with no existing city name, a response contains error message and 404 status code', async () => {
     const response = await request(app).post('/weather').send({
       cityName: 'Londonn',
     });
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(404);
     expect(response.headers['content-type']).toEqual(
       expect.stringContaining('json'),
     );
